@@ -1,126 +1,101 @@
+// BenchmarkDotNet kütüphanesini dahil et
 using BenchmarkDotNet.Attributes;
+// Güvenlik kriptografisi için
 using System.Security.Cryptography;
+// Metin işleme için
 using System.Text;
 
+// DemoBenchMark namespace'i
 namespace DemoBenchMark;
 
 /// <summary>
-/// Hash fonksiyonlarının performans testlerini içeren sınıf
-/// Bu sınıf farklı hash algoritmaları arasında performans karşılaştırması yapar
-/// BenchmarkDotNet kütüphanesi kullanılarak otomatik performans ölçümleri yapılır
+/// Hash algoritmaları için benchmark testleri
+/// Bu sınıf farklı hash algoritmalarının performansını karşılaştırır
 /// </summary>
-[MemoryDiagnoser] // Bellek kullanımını da ölçümler
-[SimpleJob] // Basit iş konfigürasyonu - hızlı test için
+[MemoryDiagnoser] // Bellek kullanımını da ölçer
 public class HashBenchmarks
 {
-    /// <summary>
-    /// Test edilecek örnek veri - 1000 karakterlik rastgele string
-    /// Tüm hash fonksiyonları bu veri üzerinde test edilir
-    /// </summary>
+    // Test edilecek veri
     private readonly string _testData;
-    
-    /// <summary>
-    /// Test verisinin byte dizisi halinde saklanması
-    /// Hash fonksiyonları byte dizisi ile çalıştığı için önceden dönüştürülür
-    /// </summary>
+    // Test verisinin byte dizisi hali
     private readonly byte[] _testBytes;
-
-    /// <summary>
-    /// SHA256 hash algoritması örneği
-    /// Güvenli hash fonksiyonu - yavaş ama güvenli
-    /// </summary>
-    private readonly SHA256 _sha256 = SHA256.Create();
     
-    /// <summary>
-    /// MD5 hash algoritması örneği
-    /// Hızlı hash fonksiyonu - güvenlik açısından zayıf ama performanslı
-    /// </summary>
-    private readonly MD5 _md5 = MD5.Create();
+    // Hash algoritmaları
+    private readonly SHA256 _sha256;
+    private readonly MD5 _md5;
 
     /// <summary>
-    /// Benchmark sınıfının yapıcı metodu
-    /// Test verilerini hazırlar ve hash algoritmalarını başlatır
+    /// Yapıcı metod - Test verilerini hazırlar
     /// </summary>
     public HashBenchmarks()
     {
-        // 1000 karakterlik rastgele test verisi oluştur
-        var random = new Random(42); // Sabit seed - tutarlı sonuçlar için
+        // Test verisi oluştur (1000 karakter)
+        var random = new Random(42); // Sabit seed kullan
         var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        var stringBuilder = new StringBuilder(1000);
+        var builder = new StringBuilder(1000);
         
         // Rastgele karakterlerle string oluştur
         for (int i = 0; i < 1000; i++)
         {
-            stringBuilder.Append(chars[random.Next(chars.Length)]);
+            builder.Append(chars[random.Next(chars.Length)]);
         }
         
-        _testData = stringBuilder.ToString();
+        _testData = builder.ToString();
         _testBytes = Encoding.UTF8.GetBytes(_testData);
+        
+        // Hash algoritmaları örneklerini oluştur
+        _sha256 = SHA256.Create();
+        _md5 = MD5.Create();
     }
 
     /// <summary>
-    /// SHA256 hash fonksiyonunun performans testi
-    /// Güvenli ama yavaş hash algoritması
-    /// Kriptografik güvenlik gerektiren durumlarda tercih edilir
+    /// SHA256 hash algoritması testi
+    /// Güvenli ama yavaş hash fonksiyonu
     /// </summary>
-    /// <returns>Hash sonucu byte dizisi</returns>
     [Benchmark]
     public byte[] SHA256Hash()
     {
-        // Test verisini SHA256 ile hash'le
         return _sha256.ComputeHash(_testBytes);
     }
 
     /// <summary>
-    /// MD5 hash fonksiyonunun performans testi
-    /// Hızlı ama güvenlik açısından zayıf hash algoritması
-    /// Sadece hız gerektiren ve güvenlik önemli olmayan durumlarda kullanılır
+    /// MD5 hash algoritması testi
+    /// Hızlı ama güvenlik açısından zayıf
     /// </summary>
-    /// <returns>Hash sonucu byte dizisi</returns>
     [Benchmark]
     public byte[] MD5Hash()
     {
-        // Test verisini MD5 ile hash'le
         return _md5.ComputeHash(_testBytes);
     }
 
     /// <summary>
-    /// Basit string hash fonksiyonunun performans testi
-    /// .NET'in dahili GetHashCode() metodunu kullanır
-    /// En hızlı seçenek ama hash kalitesi düşük
+    /// String'in dahili hash fonksiyonu testi
+    /// En hızlı seçenek
     /// </summary>
-    /// <returns>Hash sonucu integer değeri</returns>
     [Benchmark]
     public int StringHashCode()
     {
-        // String'in dahili hash fonksiyonunu kullan
         return _testData.GetHashCode();
     }
 
     /// <summary>
-    /// Özel hash fonksiyonunun performans testi
-    /// Basit bir hash algoritması implementasyonu
-    /// Eğitim amaçlı - gerçek projede kullanılmamalı
+    /// Özel hash algoritması testi
+    /// Basit bir hash implementasyonu
     /// </summary>
-    /// <returns>Hash sonucu integer değeri</returns>
     [Benchmark]
     public int CustomHash()
     {
         int hash = 0;
-        
-        // Her karakter için basit hash hesaplama
+        // Her karakter için hash hesapla
         foreach (char c in _testData)
         {
-            // Hash değerini kaydır ve yeni karakteri ekle
-            hash = (hash * 31) + c; // 31 sayısı hash fonksiyonlarında yaygın kullanılır
+            hash = (hash * 31) + c; // 31 sayısı hash için popüler
         }
-        
         return hash;
     }
 
     /// <summary>
-    /// Kaynakları temizleme metodu
-    /// Hash algoritmalarının kullandığı kaynakları serbest bırakır
+    /// Kaynakları temizle
     /// </summary>
     public void Dispose()
     {

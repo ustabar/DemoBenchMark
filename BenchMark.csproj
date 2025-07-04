@@ -1,13 +1,21 @@
+<!-- DemoBenchMark C# Proje Dosyası -->
+<!-- Bu dosya projenin temel konfigürasyonlarını ve bağımlılıklarını tanımlar -->
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <!-- Çıktı tipi: Konsol uygulaması -->
     <OutputType>Exe</OutputType>
+    <!-- Hedef framework: .NET 8.0 -->
     <TargetFramework>net8.0</TargetFramework>
+    <!-- Using direktiflerini otomatik dahil et -->
     <ImplicitUsings>enable</ImplicitUsings>
+    <!-- Nullable reference types'ı etkinleştir -->
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <!-- Paket referansları -->
   <ItemGroup>
+    <!-- BenchmarkDotNet: Performans testi için kullanılır -->
     <PackageReference Include="BenchmarkDotNet" Version="0.13.12" />
   </ItemGroup>
 

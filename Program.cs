@@ -1,31 +1,30 @@
+// BenchmarkDotNet kütüphanesini dahil et
 using BenchmarkDotNet.Running;
 
+// DemoBenchMark namespace'i
 namespace DemoBenchMark;
 
 /// <summary>
-/// Ana program sınıfı - Benchmark testlerini çalıştırmak için giriş noktasıdır
-/// Bu sınıf, BenchmarkDotNet kütüphanesini kullanarak performans testlerini başlatır
+/// Ana program sınıfı
+/// Bu sınıf uygulamanın giriş noktasını sağlar ve benchmark testlerini çalıştırır
 /// </summary>
 public class Program
 {
     /// <summary>
-    /// Uygulamanın ana giriş noktası
-    /// Benchmark testlerini çalıştırır ve sonuçları konsola yazdırır
+    /// Ana metod - Uygulamanın çalışmaya başladığı ilk nokta
     /// </summary>
     /// <param name="args">Komut satırı argümanları</param>
     public static void Main(string[] args)
     {
-        // Konsol ekranına hoş geldiniz mesajı yazdır
-        Console.WriteLine("=== DemoBenchMark Performans Test Uygulaması ===");
-        Console.WriteLine("Hash fonksiyonlarının performans testleri başlatılıyor...");
-        Console.WriteLine();
-
-        // BenchmarkDotNet ile HashBenchmarks sınıfındaki testleri çalıştır
-        // Bu, otomatik olarak tüm [Benchmark] öznitelikli metotları bulur ve test eder
+        // Kullanıcıya hoş geldin mesajı göster
+        Console.WriteLine("=== DemoBenchMark Uygulaması ===");
+        Console.WriteLine("Performans testleri başlatılıyor...");
+        
+        // BenchmarkDotNet ile Hash benchmark testlerini çalıştır
         BenchmarkRunner.Run<HashBenchmarks>();
         
-        // Test tamamlandıktan sonra kullanıcıdan giriş bekle
-        Console.WriteLine("\nTestler tamamlandı. Çıkmak için herhangi bir tuşa basın...");
+        // Kullanıcıdan çıkmak için tuş bekle
+        Console.WriteLine("\nTestler tamamlandı. Çıkmak için bir tuşa basın...");
         Console.ReadKey();
     }
 }
